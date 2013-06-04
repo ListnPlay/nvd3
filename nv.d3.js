@@ -9600,7 +9600,7 @@ nv.models.scatter = function() {
                 });
               })
               .on('mouseover', function(d) {
-                if (needsUpdate) return 0;
+                if (needsUpdate || d.series == null) return 0;
                 var series = data[d.series],
                     point  = series.values[d.point];
 
@@ -9613,7 +9613,7 @@ nv.models.scatter = function() {
                 });
               })
               .on('mouseout', function(d, i) {
-                if (needsUpdate) return 0;
+                if (needsUpdate || d.series == null) return 0;
                 var series = data[d.series],
                     point  = series.values[d.point];
 
