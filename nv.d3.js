@@ -1794,6 +1794,7 @@ nv.models.cumulativeLineChart = function() {
     , showLegend = true
     , tooltips = true
     , showControls = true
+    , enableClick = true
     , rescaleY = true
     , tooltip = function(key, x, y, e, graph) {
         return '<h3>' + key + '</h3>' +
@@ -1883,7 +1884,10 @@ nv.models.cumulativeLineChart = function() {
       chart.container = this;
 
       //set state.disabled
-      state.disabled = data.map(function(d) { return !!d.disabled });
+      if (data) {
+         state.disabled = data.map(function(d) { return !!d.disabled });
+      }
+
 
       if (!defaultState) {
         var key;
@@ -1927,7 +1931,6 @@ nv.models.cumulativeLineChart = function() {
 
       //------------------------------------------------------------
       // Display No Data message if there's nothing to show.
-
       if (!data || !data.length || !data.filter(function(d) { return d.values.length }).length) {
         var noDataText = container.selectAll('.nv-noData').data([noData]);
 
@@ -2194,17 +2197,19 @@ nv.models.cumulativeLineChart = function() {
 
             updateZero();
           });
+          
+      if (enableClick) {
+          lines.dispatch.on('elementClick', function(e) {
+            index.i = e.pointIndex;
+            index.x = dx(index.i);
 
-      lines.dispatch.on('elementClick', function(e) {
-        index.i = e.pointIndex;
-        index.x = dx(index.i);
+            // update state and send stateChange with new index
+            state.index = index.i;
+            dispatch.stateChange(state);
 
-        // update state and send stateChange with new index
-        state.index = index.i;
-        dispatch.stateChange(state);
-
-        updateZero();
-      });
+            updateZero();
+          }); 
+      }
 
       controls.dispatch.on('legendClick', function(d,i) { 
         d.disabled = !d.disabled;
@@ -2362,6 +2367,12 @@ nv.models.cumulativeLineChart = function() {
   chart.showControls = function(_) {
     if (!arguments.length) return showControls;
     showControls = _;
+    return chart;
+  };
+  
+  chart.enableClick = function(_) {
+    if (!arguments.length) return enableClick;
+    enableClick = _;
     return chart;
   };
 
