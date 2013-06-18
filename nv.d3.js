@@ -2167,7 +2167,8 @@ nv.models.cumulativeLineChart = function() {
       line.tempDisabled = false;
 
       line.values = line.values.map(function(point, pointIndex) {
-        point.display = {'y': (lines.y()(point, pointIndex) - v) / (1 + v) };
+        // CHANGED BY AVNER point.display = {'y': (lines.y()(point, pointIndex) - v) / (1 + v) }; 
+        point.display = {'y': (lines.y()(point, pointIndex)) };
         return point;
       })
 
