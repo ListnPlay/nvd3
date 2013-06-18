@@ -2309,6 +2309,10 @@ nv.models.discreteBar = function() {
           })
           .on('mouseover', function(d,i) { //TODO: figure out why j works above, but not here
             d3.select(this).classed('hover', true);
+            
+            // ADDED By AVNER - Fix needed for RealTime update of the tooltip on barcharts 
+            data[d.series].values[i] = d;
+            
             dispatch.elementMouseover({
               value: getY(d,i),
               point: d,
