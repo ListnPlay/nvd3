@@ -3631,6 +3631,7 @@
             , noData = "No Data Available."
             , dispatch = d3.dispatch('tooltipShow', 'tooltipHide', 'beforeUpdate')
             , transitionDuration = 250
+            , forceGravity = null
             ;
 
         xAxis
@@ -3658,8 +3659,16 @@
                 y = yAxis.tickFormat()(discretebar.y()(e.point, e.pointIndex)),
                 content = tooltip(e.series.key, x, y, e, chart);
 
-            console.log("Show tooltip e value: ", e.value);
-            nv.tooltip.show([left, top], content, e.value < 0 ? 'n' : 's', null, offsetElement);
+            var gravity = null;
+            if (forceGravity) {
+                gravity = forceGravity;
+            } else {
+                gravity = (e.value < 0) ? 'n' : 's';
+            }
+
+            console.log("Show tooltip! force gravity? ", forceGravity);
+
+            nv.tooltip.show([left, top], content, gravity, null, offsetElement);
         };
 
         //============================================================
@@ -3940,6 +3949,12 @@
             transitionDuration = _;
             return chart;
         };
+
+        chart.forceGravity = function(_) {
+            if (!arguments.length) return forceGravity;
+            forceGravity = _;
+            return chart;
+        }
 
         //============================================================
 
@@ -5695,7 +5710,7 @@
                 });
 
                 dispatch.on('tooltipShow', function(e) {
-                    if (tooltips) showTooltip(e, that.parentNode);
+                    if (tooltips) showTooltip(e, that.parentNode, forceGravity);
                 });
 
 
